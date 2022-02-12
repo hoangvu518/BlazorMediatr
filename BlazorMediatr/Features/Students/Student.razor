@@ -1,0 +1,36 @@
+﻿@page "/students"
+@using MediatrExample.Features.Student;
+@inject MediatrDecorator _mediatorDecorator
+<h3>Student</h3>
+
+<button type="button" @onclick="SendMediatorRequest">Click to throw exception</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in students)
+            {
+                <tr>
+                    <td>@student.Id</td>
+                    <td>@student.Name</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+@code {
+    private List<GetList.StudentDto> students; 
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _mediatorDecorator.Send(new GetList.Query());
+        students = result.Students;
+    }
+    private async Task SendMediatorRequest()
+    {
+        var result = await _mediatorDecorator.Send(new MyException.Query());
+    }
+}
